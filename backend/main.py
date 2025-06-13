@@ -321,9 +321,9 @@ async def send_email(request: Request, data: SendEmail):
     print(response.status_code)
     print(response.json())
     if response.ok:
-        return {"detail": "this shit workd"}
+        return {"detail": "please check your email"}
     else:
-        raise HTTPException(status_code=500, detail="shit broke")
+        raise HTTPException(status_code=500, detail="something bad happened")
         
 class VerifyUser(BaseModel):
     token: str
