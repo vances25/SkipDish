@@ -313,7 +313,7 @@ async def send_email(request: Request, data: SendEmail):
         "subject": "Verify your email",
         "htmlContent": f"""
             <p>Click the link to verify your email:</p>
-            <a href="{os.getenv('DOMAIN')}/confirm?token={token}">Verify Email</a>
+            <a href="https://{os.getenv('DOMAIN')}/confirm?token={token}">Verify Email</a>
         """
     }
 
