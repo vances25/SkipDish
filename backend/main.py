@@ -143,8 +143,8 @@ async def login(data: Login, request: Request, response: Response):
         key="refresh_token",
         value=refresh_token,
         httponly=True,
-        secure=False,
-        samesite="Lax",
+        secure=True,
+        samesite="None",
         max_age=60 * 60 * 24 * 7,  # 7 days
         path="/refresh"
     )
@@ -236,8 +236,8 @@ async def refresh(request: Request, response: Response):
         key="refresh_token",
         value=new_refresh_token,
         httponly=True,
-        secure=False,
-        samesite="Lax",
+        secure=True,
+        samesite="None",
         max_age=60 * 60 * 24 * 7,  # 7 days
         path="/refresh"
     )
