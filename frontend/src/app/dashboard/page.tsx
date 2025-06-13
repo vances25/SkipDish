@@ -22,11 +22,13 @@ export default function Dashboard(){
 
 const generate = () => {
   const token = localStorage.getItem("token")
+  if (!token) return;
   const decoded = jwtDecode(token);
   const user_id = decoded.sub;
-  setShopId(user_id)
-
-  QRCode.toDataURL(`${process.env.NEXT_PUBLIC_DOMAIN}/shop/${user_id}`).then(setSrc)
+  if (typeof user_id === "string") {
+    setShopId(user_id);
+    QRCode.toDataURL(`${process.env.NEXT_PUBLIC_DOMAIN}/shop/${user_id}`).then(setSrc);
+  }
 }
 
 

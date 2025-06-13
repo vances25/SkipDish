@@ -87,16 +87,22 @@ export default function DashboardPage() {
       })
       .then((data) => {
         // Assume data.orders now includes `is_bumped` or `bumped_at` if your backend supports it
-        const sortedOrders = (data.orders || []).sort((a, b) => {
-          const statusPriority = { pending: 1, "in progress": 2, ready: 3, completed: 4, cancelled: 5 };
-          if (statusPriority[a.status] !== statusPriority[b.status]) {
-            return statusPriority[a.status] - statusPriority[b.status];
+        const statusPriority: Record<"pending" | "in progress" | "ready" | "completed" | "cancelled", number> = {
+          pending: 1,
+          "in progress": 2,
+          ready: 3,
+          completed: 4,
+          cancelled: 5,
+        };
+        const sortedOrders = (data.orders || []).sort((a: Order, b: Order) => {
+          if (statusPriority[a.status as keyof typeof statusPriority] !== statusPriority[b.status as keyof typeof statusPriority]) {
+            return statusPriority[a.status as keyof typeof statusPriority] - statusPriority[b.status as keyof typeof statusPriority];
           }
           return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
         });
 
         setOrders(
-          sortedOrders.map((order) => ({
+          sortedOrders.map((order: Order) => ({
             ...order,
             isCompleted: order.status === "completed",
           }))
@@ -201,7 +207,7 @@ export default function DashboardPage() {
   if (loading) return (<div className={styles.loading}>Loading orders...</div>);
 
   const sortedOrdersByStatus = [...orders].sort((a, b) => {
-    const priority = {
+    const priority: Record<string, number> = {
       "in progress": 0,
       "pending": 1,
       "completed": 2,

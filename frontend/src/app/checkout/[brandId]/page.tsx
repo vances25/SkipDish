@@ -82,7 +82,7 @@ export default function CookieCheckoutPage() {
           router.push(`/shop/${brandId}`);
         } else {
           setCart(validItems);
-          const totalPrice = validItems.reduce((sum, item) => sum + parseFloat(item.price), 0);
+          const totalPrice = validItems.reduce((sum: number, item: MenuItem) => sum + parseFloat(item.price), 0);
           setTotal(totalPrice);
           setValidated(true);
         }

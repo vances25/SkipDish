@@ -10,11 +10,11 @@ const url = process.env.NEXT_PUBLIC_BACKEND_URL
 
 export default function Register() {
 
-  const [email, setEmail] = useState<String>("")
-  const [password, setPassword] = useState<String>("")
-  const [confirmPassword, setConfirmPassword] = useState<String>("")
+  const [email, setEmail] = useState<string>("")
+  const [password, setPassword] = useState<string>("")
+  const [confirmPassword, setConfirmPassword] = useState<string>("")
 
-  const [response, setResponse] = useState<String | null>(null)
+  const [response, setResponse] = useState<string | null>(null)
 
   const [ready, setReady] = useState<boolean>(true)
 

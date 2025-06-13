@@ -11,10 +11,10 @@ const url = process.env.NEXT_PUBLIC_BACKEND_URL
 export default function Login() {
   const router = useRouter();
 
-  const [email, setEmail] = useState<String>("")
-  const [password, setPassword] = useState<String>("")
+  const [email, setEmail] = useState<string>("")
+  const [password, setPassword] = useState<string>("")
 
-  const [response, setResponse] = useState<String | null>(null)
+  const [response, setResponse] = useState<string | null>(null)
 
   const [ready, setReady] = useState<boolean>(true)
 

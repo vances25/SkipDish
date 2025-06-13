@@ -71,8 +71,12 @@ export default function VerifyEmail() {
     return
     }
 
-    const decoded = jwtDecode(token);
+    const decoded: { email?: string } = jwtDecode(token || "");
     const email = decoded.email;
+    if (!email) {
+      setMessage("Email not found in token.");
+      return;
+    }
     console.log("User email:", email);
 
     fetch(`${url}/send_email`, {

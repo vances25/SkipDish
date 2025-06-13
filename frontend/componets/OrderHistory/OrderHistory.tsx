@@ -3,7 +3,28 @@
 import { useState } from "react";
 import styles from "./style.module.css";
 import OrderCard from "../OrderCard/OrderCard"; // adjust path if needed
-import { Order } from "../OrderCard/OrderCard";
+
+
+interface OrderItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity?: number;
+}
+
+
+interface Order {
+  user_id: string;
+  customer_name: string;
+  items: OrderItem[];
+  total_price: number;
+  status: string;
+  created_at: string;
+  id: string;
+  is_bumped?: boolean;
+  bumped_at?: string;
+  isCompleted?: boolean;
+}
 
 interface Props {
   orders: Order[];
