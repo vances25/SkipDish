@@ -1,0 +1,203 @@
+/* page.module.css */
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.top_section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+
+.brand_img {
+  margin-top: 100px;
+  max-width: 300px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.camera {
+  position: absolute;
+  top: 60px;
+  right: 30px;
+  max-width: 40px;
+  filter: brightness(0) invert(1);
+  cursor: pointer;
+}
+
+.shopname {
+  margin-top: 40px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.shopname img {
+  max-width: 30px;
+  cursor: pointer;
+}
+
+.new_shop {
+  position: fixed;
+  z-index: 10;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #f7f7f7;
+  border: 1px solid #ccc;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 90%;
+  max-width: 500px;
+}
+
+.new_shop img {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  max-width: 20px;
+  cursor: pointer;
+}
+
+.new_shop label {
+
+  font-weight: 600;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.95rem;
+  width: 100%;
+}
+
+.new_shop div {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;       /* allows inputs to stretch full width */
+  width: 100%;
+  gap: 1rem;
+}
+
+.new_shop input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.new_shop button {
+  background-color: #007bff;
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.3s ease;
+}
+
+.new_shop button:hover {
+  background-color: #006ae6;
+}
+
+.menu_section {
+  overflow: visible;
+  margin-top: 40px;
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.add_button {
+  margin-top: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.menu_list {
+  width: 100%;
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu_item {
+  display: flex;
+  justify-content: space-between;
+  background-color: #ffffff;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.back_home {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 50px;
+  z-index: 1000;
+  cursor: pointer;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.back_home:hover {
+  transform: scale(1.1) rotate(-3deg);
+  filter: brightness(1.2);
+}
+
+.brand_wrapper {
+  position: relative;
+  display: inline-block;
+  margin-top: 100px;
+}
+
+.brand_img {
+  max-width: 300px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  object-fit: cover;
+}
+
+.camera_icon {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 40px;
+  background-color: white;
+  padding: 6px;
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.camera_icon:hover {
+  transform: scale(1.1);
+}
+
+.brand_wrapper img{
+  max-width: 150px;
+}

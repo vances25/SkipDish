@@ -1,0 +1,68 @@
+.menu_card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 20px;
+  margin: 12px 0;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.menu_card:hover {
+  transform: scale(1.01);
+}
+
+.menu_info {
+  flex: 1;
+}
+
+.menu_info h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.menu_info p {
+  margin: 6px 0 0;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.menu_action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.price {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.actions button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background-color: #e0e0e0;
+  color: #333;
+  transition: background 0.2s ease;
+}
+
+.delete_button {
+  background-color: #ff5252;
+  color: white;
+}
+
+.delete_button:hover {
+  background-color: #e53935;
+}

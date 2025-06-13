@@ -1,0 +1,161 @@
+.container {
+  padding: 2rem;
+  text-align: center;
+}
+
+.title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.noOrders {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.orderCard {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  background-color: #fff;
+  display: flex; /* Use flexbox for layout */
+  flex-direction: column; /* Stack content vertically */
+}
+
+.orderHeader {
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+  color: #333;
+}
+
+.customerName {
+  font-weight: bold;
+}
+
+.totalPrice {
+  color: #28a745; /* A nice green for total price */
+}
+
+.itemList {
+  list-style: disc;
+  padding-left: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.item {
+  margin-bottom: 0.25rem;
+  color: #666;
+}
+
+.statusControls {
+  display: flex;
+  flex-wrap: wrap; /* Allow buttons to wrap */
+  gap: 0.5rem; /* Space between buttons */
+  margin-top: 1rem;
+  align-items: center; /* Align items vertically */
+}
+
+.statusButton {
+  padding: 0.6rem 1rem;
+  border: 1px solid #007bff;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease; /* Added transform */
+}
+
+.statusButton:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+  transform: translateY(-1px); /* Slight lift on hover */
+}
+
+.statusButton:active {
+  transform: translateY(0); /* Reset on click */
+}
+
+
+.statusButton.active {
+  background-color: #28a745; /* Green for active status */
+  border-color: #28a745;
+  cursor: default; /* Change cursor for active button */
+}
+
+.bumpButton {
+  padding: 0.6rem 1rem;
+  border: 1px solid #6c757d;
+  border-radius: 5px;
+  background-color: #6c757d;
+  color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+  margin-left: auto; /* Push to the right */
+}
+
+.bumpButton:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
+  transform: translateY(-1px);
+}
+
+.bumpButton:active {
+  transform: translateY(0);
+}
+
+.loading {
+  font-size: 1.2rem;
+  color: #777;
+}
+
+/* Flex item for the main order details and status buttons */
+.orderContent {
+  flex-grow: 1; /* Allows content to take available space */
+}
+
+/* Container for status buttons and bump button */
+.actionRow {
+  display: flex;
+  justify-content: space-between; /* Space out content and bump button */
+  align-items: center;
+  margin-top: 1rem;
+  border-top: 1px solid #eee; /* Separator */
+  padding-top: 1rem;
+}
+
+.backButton {
+  padding: 0.5rem 1rem;
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.backButton:hover {
+  background-color: #e6e6e6;
+}
+
+.topBar img{
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  max-width: 30px;
+  cursor: pointer;
+}
+
+.historyButton{
+    width: 60%;
+    height: 8vh;
+    border-radius: 10px;
+    background-color: #0056b3;
+    border: none;
+    color: white;
+    font-size: 1.2em;
+}

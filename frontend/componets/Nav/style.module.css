@@ -1,0 +1,28 @@
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 80%;
+
+}
+
+.container img{
+    max-width: 200px;
+}
+
+.container button{
+    height: 5vh;
+    width: 30%;
+    background-color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1em;
+}
+
+.container button:hover{
+    background-color: rgb(232, 232, 232);
+}
+
+.container button:active {
+  transform: scale(0.97);
+}

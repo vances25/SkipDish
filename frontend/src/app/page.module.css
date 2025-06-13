@@ -1,0 +1,421 @@
+.container{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.header {
+  display: flex;
+  width: 90%;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.03);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header img{
+  max-width: 100px;
+}
+
+
+.login {
+  background-color: #0061ff;
+  border: none;
+  color: white;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.login:hover {
+  background-color: #004ecc;
+}
+
+.nav {
+  display: flex;
+  gap: 100px;
+}
+
+.nav a {
+  text-decoration: none;
+  color: #111;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.nav a:hover {
+  color: #0061ff;
+}
+
+
+.action{
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15%;
+  width: 90%;
+  margin: 0 auto;
+  background-image: radial-gradient(circle farthest-corner at 10% 20%, #0061ff 0%, #60efff 100.7%);
+  min-height: 400px;
+  padding: 0 20px;
+  border-radius: 10px;
+  padding: 30px;
+  overflow: hidden;
+}
+
+.action img{
+  max-width: 300px;
+  filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+}
+
+.infotext{
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5vh;
+  max-width: 400px;
+  font-size: 1.1em;
+  color: white;
+  margin-bottom: 50px;
+}
+
+
+.infotext div{
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  z-index: 10;
+}
+
+.infotext button{
+  background-color: white;
+  border: none;
+  width: 150px;
+  height: 50px;
+  border-radius: 7px;
+  cursor: pointer;
+  color: #0061ff;
+}
+
+.solutions{
+  margin-top: 150px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.solutionCards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+  width: 70%;
+}
+
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  max-width: 500px;
+  flex: 1 1 300px;
+}
+
+.card div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.solutionCards img {
+  max-width: 50px;
+  height: auto;
+}
+
+.burger{
+  position: absolute;
+  z-index: 1;
+  left: -90px;
+  bottom: 15px;
+  transform: rotate(-12deg);
+}
+
+.fry{
+  position: absolute;
+  z-index: 1;
+  right: -90px;
+  bottom: 15px;
+  transform: rotate(12deg);
+}
+
+.taco{
+  position: absolute;
+  z-index: 1;
+  left: -200px;
+  top: -15px;
+  transform: rotate(30deg);
+}
+
+.how_works{
+  margin-top: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.steps{
+  width: 80%;
+  margin-top: 20px;
+  flex-direction: row;
+  justify-content: center;
+  display: flex;
+  gap: 50px
+
+}
+
+.steps div{
+  margin-top: 30px;
+}
+
+.steps img{
+  align-self: center;
+  width: 300px;
+}
+
+
+.pricing{
+  margin-top: 100px;
+  display: flex;
+  gap: 50px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.pricing button{
+  background-color: #0061ff;
+  width: 40%;
+  height: 50px;
+  border: none;
+  color: white;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.pricing button:hover {
+  background-color: #004ecc;
+}
+
+
+.options{
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+}
+
+
+.options p{
+  margin: 5px 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 5px;
+}
+
+.options img{
+  max-width: 30px;
+}
+
+.options div{
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f7fa;
+  padding: 30px;
+  border-radius: 10px;
+
+}
+
+.footer {
+  margin-top: 100px;
+  width: 100%;
+  background-color: #f1f4f8;
+  padding: 40px 20px 10px;
+  color: #333;
+  font-size: 0.9em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 100px;
+
+}
+
+.footerContent {
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 50px
+}
+
+.column{
+  display: flex;
+  flex-direction: column;
+  gap: 20px
+}
+
+
+.column div{
+  display:  flex;
+  flex-direction: row;
+  gap: 20px
+}
+
+
+.column a {
+  text-decoration: none;
+  color: #111;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.column a:hover {
+  color: #0061ff;
+}
+
+
+
+@media(max-width: 768px){
+
+  .column div{
+    gap: 10px;
+  }
+
+  .nav a{
+    font-size: 0.8em;
+  }
+
+  .nav{
+    gap: 15px;
+  }
+
+  .fry{
+    bottom: 250px;
+  }
+  .burger{
+    bottom: 300px;
+  }
+
+  .how_works{
+    margin-top: 75px;
+  }
+
+  .solutions{
+    margin-top: 75px;
+  }
+
+
+  .steps img{
+    align-self: center;
+    width: 150px;
+  }
+
+  .infotext{
+    max-width: 300px;
+    font-size: 0.9;
+  }
+  .action{
+    flex-direction: column;
+  }
+
+  .login{
+    padding: 5px 10px;
+  }
+
+  .steps{
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .options{
+    flex-direction: column;
+  }
+
+  .pricing{
+    margin-top: 50px;
+    gap: 20px;
+  }
+  .footerContent{
+    flex-direction: column;
+  }
+
+}
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popupContent {
+  background: white;
+  padding: 30px 40px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.popupContent h2 {
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+  color: #222;
+}
+
+.popupContent p {
+  margin-bottom: 20px;
+  font-size: 1rem;
+  color: #555;
+}
+
+.popupContent button {
+  background-color: #0061ff;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.popupContent button:hover {
+  background-color: #004ecc;
+}
