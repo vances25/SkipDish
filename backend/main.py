@@ -26,9 +26,7 @@ app = FastAPI(docs_url=None, redoc_url=None)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000", 
-        "http://192.168.68.111:3000",
-        "http://192.168.68.111:8000",
+        f"https://{os.getenv('DOMAIN')}"
         ],
     allow_credentials=True,
     allow_methods=["*"],
