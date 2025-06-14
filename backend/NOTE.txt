@@ -1,0 +1,3 @@
+ok so the refresh token does not work with CORS and only and local host so to fix:
+
+go into main.py and change the length of the access token to say couple hours
