@@ -146,7 +146,8 @@ async def login(data: Login, request: Request, response: Response):
         secure=True,
         samesite="None",
         max_age=60 * 60 * 24 * 7,  # 7 days
-        path="/refresh"
+        path="/refresh",
+        domain=os.getenv("DOMAIN")
     )
     
     
@@ -239,7 +240,8 @@ async def refresh(request: Request, response: Response):
         secure=True,
         samesite="None",
         max_age=60 * 60 * 24 * 7,  # 7 days
-        path="/refresh"
+        path="/refresh",
+        domain=os.getenv("DOMAIN")
     )
     
     
@@ -367,7 +369,7 @@ async def verify_user(request: Request, data: VerifyUser):
 @app.post("/logout")
 async def logout(request: Request, response: Response):
     db = request.app.state.db
-    token_db = db["users"]["token"]
+    token_db = db["users"]["tokens"]
     
     refresh_token = request.cookies.get("refresh_token")
     
