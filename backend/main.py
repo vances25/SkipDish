@@ -15,10 +15,15 @@ import requests
 from PIL import Image
 import time
 from typing import List
+import stripe
+import json
+
 
 load_dotenv()
 
 database = None
+
+stripe.api_key = os.getenv("STRIPE_KEY")
 
 app = FastAPI(docs_url=None, redoc_url=None)
 #app = FastAPI()
@@ -26,7 +31,8 @@ app = FastAPI(docs_url=None, redoc_url=None)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        f"https://{os.getenv('DOMAIN')}"
+        f"https://{os.getenv('DOMAIN')}",
+        "http://localhost:3000"
         ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -35,7 +41,7 @@ app.add_middleware(
 
 
 
-def create_tokens(email, userid, role, time_delay=5):
+def create_tokens(email, userid, role, time_delay=3600):
     REFRESH_KEY = os.getenv("REFRESH_KEY")
     ACCESS_KEY = os.getenv("ACCESS_KEY")
     
@@ -99,7 +105,138 @@ async def startup():
     
     
     print("start up completed")
+  
+
+class Item(BaseModel):
+    name: str
+    price: float
+class CheckoutSessionRequest(BaseModel):
+    vendor_id: str
+    amount_cents: int
+    items: List[Item]
+@app.post("/create-checkout-session")
+async def checkoutSession(data: CheckoutSessionRequest, request: Request):
+    db = request.app.state.db
+    vendor = await db["users"]["users"].find_one({"user_id": data.vendor_id})
+
+    if not vendor or "stripe_id" not in vendor:
+        raise HTTPException(status_code=404, detail="Vendor not found or not connected to Stripe")
+
+    order_id = str(uuid.uuid4())
     
+    items = [item.dict() for item in data.items]  # Convert all to plain dicts
+    json_string = json.dumps(items)
+
+    try:
+        session = stripe.checkout.Session.create(
+            metadata={
+            "vendor_id": data.vendor_id,
+            "order_id": order_id,
+            "total_price": data.amount_cents * 0.01,
+            "items": json_string
+        },
+            payment_method_types=["card"],
+            line_items = [{
+            "price_data": {
+                "currency": "usd",
+                "product_data": {
+                    "name": item.name,
+                },
+                "unit_amount": int(item.price * 100),
+            },
+            "quantity": 1
+        } for item in data.items],
+            mode="payment",
+            success_url=f"{os.getenv('FRONTEND_URL')}/receipt?order_id={order_id}",
+            cancel_url=f"{os.getenv('FRONTEND_URL')}/shop/{data.vendor_id}",
+            payment_intent_data={
+                "application_fee_amount": int(data.amount_cents * 0.1),
+                "transfer_data": {
+                    "destination": vendor["stripe_id"],
+                },
+                "on_behalf_of": vendor["stripe_id"]
+            }
+        )
+        return {"url": session.url}
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/one_time_receipt/{order_id}")
+async def get_one_time_receipt(order_id: str, request: Request):
+    db = request.app.state.db
+    receipt_db = db["users"]["receipts"]
+
+    receipt = await receipt_db.find_one({"order_id": order_id}, {"_id": 0})
+    if not receipt:
+        raise HTTPException(status_code=404, detail="Receipt not found")
+    
+    receipt_db.delete_one({"order_id": order_id})
+    
+    print(receipt)
+
+    return receipt
+    
+    
+
+@app.post("/checkout_complete")
+async def checkout_webhook(request: Request):
+    db = request.app.state.db
+    vendor_db = db["users"]["vendors"]
+    receipt_db = db["users"]["receipts"]
+
+    payload = await request.body()
+    sig_header = request.headers.get("stripe-signature")
+    endpoint_secret = os.getenv("STRIPE_WEBHOOK_SECRET")
+
+    try:
+        event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
+    except stripe.error.SignatureVerificationError:
+        raise HTTPException(status_code=400, detail="Webhook signature verification failed.")
+
+    if event["type"] == "checkout.session.completed":
+        session = event["data"]["object"]
+        metadata = session.get("metadata", {})
+        print("Stripe Metadata:", metadata)
+
+        vendor_id = metadata.get("vendor_id")
+        order_id = metadata.get("order_id")
+        customer_name = session.get("customer_details", {}).get("name", "")
+        total_price = float(metadata.get("total_price", "0"))
+        items_json = metadata.get("items", "[]")
+        
+        
+
+        try:
+            items = json.loads(items_json)
+        except Exception as e:
+            items = []
+
+        order = {
+            "id": order_id,
+            "customer_name": customer_name,
+            "items": items,
+            "total_price": total_price,
+            "status": "pending",
+            "created_at": time.time()
+        }
+
+        await vendor_db.update_one({"user_id": vendor_id}, {"$push": {"orders": order}})
+
+        receipt = {
+            "order_id": order_id,
+            "vendor_id": vendor_id,
+            "customer_name": customer_name,
+            "items": items,
+            "total_price": total_price,
+            "created_at": time.time()
+        }
+        await receipt_db.insert_one(receipt)
+
+
+    return {"status": "success"}
+
 
 class Login(BaseModel):
     email: str
@@ -183,6 +320,12 @@ async def register(data: Register, request: Request, response: Response):
     
     access_token, _ = create_tokens(email=email, userid=user_id, role=role, time_delay=60)
 
+    account = stripe.Account.create(type="express",
+                                    capabilities={
+                                        "card_payments": {"requested": True},
+                                        "transfers": {"requested": True}
+                                    })
+    
     user_obj = {
         "password": encrypted_password,
         "email": email,
@@ -190,7 +333,7 @@ async def register(data: Register, request: Request, response: Response):
         "is_verified": False,
         "role": "vendor",
         "verify_token": "",
-        "orders": []
+        "stripe_id": account.id,
     }
   
     
@@ -247,6 +390,31 @@ async def refresh(request: Request, response: Response):
     
     return {"access_token": access_token}
 
+@app.get("/vendor/refresh")
+async def refresh_onboarding(request: Request):
+    token = request.cookies.get("access_token")  # or however you're handling auth
+    if not token:
+        return RedirectResponse("/login")
+
+    user_data = decode_token(token, os.getenv("ACCESS_KEY"))
+    if not user_data:
+        return RedirectResponse("/login")
+
+    db = request.app.state.db
+    user = await db["users"]["users"].find_one({"user_id": user_data["sub"]})
+    if not user or not user.get("stripe_id"):
+        return RedirectResponse("/dashboard")
+
+    account = stripe.Account.retrieve(user["stripe_id"])
+    link = stripe.AccountLink.create(
+        account=account.id,
+        refresh_url=f"{os.getenv("BACKEND_URL")}/vendor/refresh",  # ← points to this same endpoint
+        return_url=f"{os.getenv("FRONTEND_URL")}/dashboard",
+        type="account_onboarding"
+    )
+    return RedirectResponse(link.url)
+
+
 @app.get("/check-verify-status")
 async def check_status(request: Request, Authorization: str = Header(...)):
     db = request.app.state.db
@@ -264,8 +432,40 @@ async def check_status(request: Request, Authorization: str = Header(...)):
     
     is_verified = False
     
+    account = stripe.Account.retrieve(current_user["stripe_id"])
+    
+
     if current_user["is_verified"]:
-        return {"detail": "good", "role": current_user["role"]}
+        requirements = account.get("requirements", {})
+        if requirements.get("disabled_reason") or requirements.get("currently_due"):
+            link = stripe.AccountLink.create(
+                account=account.id,
+                refresh_url=f"{os.getenv('BACKEND_URL')}/vendor/refresh",
+                return_url=f"{os.getenv('FRONTEND_URL')}/dashboard",
+                type="account_onboarding",
+            )
+            
+            print("refresh link")
+            return {
+                "detail": "connect",
+                "url": link.url,
+                "missing": requirements.get("currently_due", []),
+                "reason": requirements.get("disabled_reason", "incomplete")
+            }
+
+        if account.charges_enabled and account.payouts_enabled:
+            return {"detail": "good", "role": current_user["role"]}
+        else:
+            print("new shit")
+            link = stripe.AccountLink.create(
+                account=account.id,
+                refresh_url=f"{os.getenv("BACKEND_URL")}/vendor/refresh",  # ← points to this same endpoint
+                return_url=f"{os.getenv("FRONTEND_URL")}/dashboard",
+                type="account_onboarding",
+            )
+            return {"detail": "connect", "url": link.url}
+
+    
     
     return {"detail": "please verify"}
 
@@ -358,6 +558,7 @@ async def verify_user(request: Request, data: VerifyUser):
                 "id": str(uuid.uuid4())
                 },
             ],
+            "orders": [],
             "created_at": time.time(),
             "updated_at": time.time()
             })
@@ -578,4 +779,5 @@ async def update_status(data: UpdateStatus, request: Request, Authorization: str
 
 
 if __name__ == "__main__":
-    pass
+    acct = stripe.Account.retrieve("acct_1RfnZrHBZgzEM4o0")
+    print(acct)

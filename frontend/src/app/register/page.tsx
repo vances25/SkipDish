@@ -18,6 +18,8 @@ export default function Register() {
 
   const [ready, setReady] = useState<boolean>(true)
 
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
   const make_request = () => {
 
   setTimeout(()=>{
@@ -74,12 +76,45 @@ export default function Register() {
       <h1>Create Account</h1>
 
       <div className={styles.input_box}>
-        <input onChange={(e)=>setEmail(e.target.value)} value={email} type="email" placeholder="Email address" />
-        <input onChange={(e)=>setPassword(e.target.value)} value={password} type="password" placeholder="Password" />
-        <input onChange={(e)=>setConfirmPassword(e.target.value)} value={confirmPassword} type="password" placeholder="Confirm Password" />
-        <button onClick={()=> make_request()}>Get Started</button>
-        <p>{response}</p>
+        <div className={styles.inputWithIcon}>
+          <img src="/icons/email.png" />
+          <input
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
+            type="email"
+            placeholder="Email address"
+          />
+        </div>
 
+        <div className={styles.inputWithIcon}>
+          <img src="/icons/lock.png" />
+          <input
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+          />
+        </div>
+
+        <div className={styles.inputWithIcon}>
+          <img src="/icons/lock.png" />
+          <input
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            value={confirmPassword}
+            type={showPassword ? "text" : "password"}
+            placeholder="Confirm Password"
+          />
+        </div>
+
+        <label>
+          <input
+            type="checkbox"
+            checked={showPassword}
+            onChange={() => setShowPassword(!showPassword)}
+          /> Show password</label>
+
+        <button onClick={() => make_request()}>Get Started</button>
+        <p>{response}</p>
       </div>
     </div>
   );

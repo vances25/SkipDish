@@ -21,17 +21,53 @@ export default function Shop() {
   const [cart, setCart] = useState<MenuItem[]>([]);
   const [showCart, setShowCart] = useState(false);
   const { brandId } = useParams();
-  
 
-
+  const cartKey = `cart-${brandId}`;
 
   const router = useRouter()
 
+  const url = process.env.NEXT_PUBLIC_BACKEND_URL
+
   useEffect(() => {
-    const storedCart = localStorage.getItem("cart");
+    const storedCart = localStorage.getItem(cartKey);
     if (storedCart) setCart(JSON.parse(storedCart));
     get_menu();
   }, []);
+
+
+  const stripe_checkout = async () => {
+    const totalInCents = Math.round(cart.reduce((sum, item) => sum + parseFloat(item.price), 0) * 100);
+
+    try {
+      const response = await fetch(`${url}/create-checkout-session`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+        vendor_id: brandId,
+        amount_cents: totalInCents,
+        items: cart.map(item => ({
+          name: item.name,
+          price: parseFloat(item.price),
+        })),
+      }),
+    });
+
+      const data = await response.json();
+
+      if (data.url) {
+        window.location.href = data.url;
+        localStorage.removeItem(cartKey);
+      } else {
+        alert("Failed to start checkout session.");
+      }
+    } catch (error) {
+      console.error("Stripe checkout error:", error);
+      alert("An error occurred during checkout.");
+    }
+  };
+
 
   const get_menu = () => {
     fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/vendor/menu/${brandId}`, {
@@ -76,7 +112,7 @@ export default function Shop() {
   const addToCart = (item: MenuItem) => {
     const updatedCart = [...cart, item];
     setCart(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    localStorage.setItem(cartKey, JSON.stringify(updatedCart));
   };
 
 
@@ -84,12 +120,12 @@ export default function Shop() {
     const updatedCart = [...cart];
     updatedCart.splice(index, 1);
     setCart(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    localStorage.setItem(cartKey, JSON.stringify(updatedCart));
 };
 
   return (
     <div className={styles.container}>
-      <img className={styles.back_home} src="/logowords.png" alt="Back Home" />
+      <img className={styles.back_home} onClick={()=>router.push("/dashboard")} src="/logowords.png" alt="Back Home" />
 
       <div className={styles.header}>
         <h1 className={styles.shopName}>{shopName}</h1>
@@ -147,7 +183,7 @@ export default function Shop() {
         </div>
         )}
         <button
-              onClick={() => router.push(`/checkout/${brandId}`)}
+              onClick={() => stripe_checkout()}
               className={styles.checkout}
             >
               Checkout

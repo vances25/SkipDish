@@ -52,6 +52,11 @@ export function useAuthGuard(requiredRole?: string) {
         });
 
         if (res.ok) {
+          const data = await res.json();
+          if (data.detail === "connect") {
+            router.push("/verify");
+            return false;
+          }
           verifyOrRedirect(token);
           return true;
         }

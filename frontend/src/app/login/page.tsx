@@ -14,7 +14,9 @@ export default function Login() {
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
 
-  const [response, setResponse] = useState<string | null>(null)
+  const [response, setResponse] = useState<string | null>("\n")
+
+  const [showPassword, setShowPassword] = useState<boolean>(false)
 
   const [ready, setReady] = useState<boolean>(true)
 
@@ -106,9 +108,25 @@ export default function Login() {
       <h1>Login</h1>
 
       <div className={styles.input_box}>
-        <input onChange={(e)=>setEmail(e.target.value)} value={email} type="email" placeholder="Email address" />
-        <input onChange={(e)=>setPassword(e.target.value)} value={password} type="password" placeholder="Password" />
+        
+        <div className={styles.inputWithIcon}>
+          <img src="/icons/email.png" />
+          <input onChange={(e)=>setEmail(e.target.value)} value={email} type="email" placeholder="Email address" />
+        </div>
+      
+        <div className={styles.inputWithIcon}>
+          <img src="/icons/lock.png" />
+        <input onChange={(e)=>setPassword(e.target.value)} value={password} type={showPassword ? "text": "password"} placeholder="Password" />
+        </div>
+        
+        <div className={styles.password_options}>
+          <label><input onChange={()=>setShowPassword(!showPassword)} type="checkbox"/> Show Password</label>
+
+          <a href="/forget">Forget Password?</a>
+        </div>
+
         <button onClick={()=> make_request()}>Login</button>
+        <p>Don't have an account? <a href="/register">Sign Up</a></p>
         <p>{response}</p>
       </div>
     </div>

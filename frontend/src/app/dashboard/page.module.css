@@ -21,7 +21,7 @@
     margin-bottom: 100px;
 }
 
-.container h1{
+.welcome{
   margin-top: 50px;
 }
 
@@ -39,12 +39,29 @@
   box-shadow: 0 4px 12px rgba(0, 97, 255, 0.15);
 }
 
-.button:hover {
+.section:hover {
   background-color: #f0f8ff;
   box-shadow: 0 6px 18px rgba(0, 97, 255, 0.25);
+  cursor: pointer;
 }
 
-.button:active {
+.section:active {
   transform: scale(0.97);
   background-color: #e6f0ff;
+}
+
+.section{
+  text-align: center;
+  padding: 20px 30px;
+  background-color: white;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  border-radius: 15px;
+}
+
+.section img{
+  width: 100px;
 }

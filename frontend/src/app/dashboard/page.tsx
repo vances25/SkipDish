@@ -66,10 +66,17 @@ const get_menu = () => {
         <div className={styles.container}>
             <Nav/>
              <img src={src && src}></img>
-            <h1>Welcome To SkipDish!</h1>
+            <h1 className={styles.welcome}>Welcome To SkipDish!</h1>
             <div className={styles.button_section}>
+                <div onClick={()=> router.push("/dashboard/orders")} className={styles.section}>
+                  <img src="/icons/bell.png" />
+                    <h1>Orders</h1>
+                    <p>View and manage all orders</p>
+                  </div>
                 <button onClick={()=> router.push("/dashboard/orders")} className={styles.button}>View Orders</button>
+
                 <button onClick={()=> router.push("/dashboard/menu")} className={styles.button}>Manage Menu</button>
+
                 <button onClick={()=> router.push(`/shop/${shopId}`)} className={styles.button}>View Shop</button>
             </div>
 

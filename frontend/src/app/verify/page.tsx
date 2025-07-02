@@ -18,6 +18,7 @@ export default function VerifyEmail() {
   const router = useRouter();
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [connectUrl, setConnectUrl] = useState<string | null>(null);
   
 
 
@@ -46,6 +47,11 @@ export default function VerifyEmail() {
           const data = await res.json();
           if (data.detail === "good") {
             router.push("/dashboard");
+          } 
+          else if (data.detail === "connect") {
+            setConnectUrl(data.url);
+            setMessage("Please connect your Stripe account to continue.");
+            setLoading(false);
           } else {
             setMessage(data.detail);
             resendEmail();
@@ -107,13 +113,22 @@ export default function VerifyEmail() {
         src="/logowhite.png"
         alt="Logo"
       />
-      <h1>Verify Your Email</h1>
+      <h1>Verify Your Account</h1>
 
       <div className={styles.input_box}>
-        <p>Please check your inbox for a link to verify your email.</p>
-        <button onClick={resendEmail}>Resend Email</button>
-            <div style={{ color: "white", textAlign: "center", padding: "2rem" }}>
+        {!connectUrl && message !== "good" && (
+          <>
+            <p>Please check your inbox for a link to verify your email.</p>
+            <button onClick={resendEmail}>Resend Email</button>
+          </>
+        )}
+        <div style={{ color: "white", textAlign: "center", padding: "2rem" }}>
           {message && <p>{message}</p>}
+          {connectUrl && (
+            <button onClick={() => window.location.href = connectUrl}>
+              Connect Stripe Account
+            </button>
+          )}
         </div>
       </div>
     </div>

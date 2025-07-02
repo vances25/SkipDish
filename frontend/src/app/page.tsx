@@ -134,33 +134,18 @@ export default function Home() {
       <section id="pricing" className={styles.pricing}>
         <h1>Pricing</h1>
 
-        <div className={styles.options}>
-
-          <div>
-            <h3>Free Tier</h3>
-            <h2>$0/month</h2>
-            <p><img src="/icons/checkmark.png"></img> Up to 5 orders per month</p>
-            <p><img src="/icons/checkmark.png"></img> Basic menu listing</p>
-            <p><img src="/icons/checkmark.png"></img> QR code setup</p>
-            <p><img src="/icons/checkmark.png"></img> Dashboard preview</p>
-            <p><img src="/icons/xmark.png"></img> No customer insights</p>
-            <p><img src="/icons/xmark.png"></img> No branding</p>
-          </div>
-
-
-          <div>
-            <h3>SkipDish Unlimited</h3>
-            <h2>$9/month</h2>
-            <p><img src="/icons/checkmark.png"></img> Full dashboard access</p>
-            <p><img src="/icons/checkmark.png"></img> Insights & reports</p>
-            <p><img src="/icons/checkmark.png"></img> QR code setup</p>
-            <p><img src="/icons/checkmark.png"></img> Dashboard preview</p>
-            <p><img src="/icons/checkmark.png"></img> Branded customer page</p>
-            <p><img src="/icons/checkmark.png"></img> Priority support</p>
-          </div>
-
-
-        </div>
+      <div className={styles.options}>
+    <div>
+      <h3>SkipDish Pricing</h3>
+      <h2>No monthly fees</h2>
+      <p><img src="/icons/checkmark.png" /> Only pay when you earn</p>
+      <p><img src="/icons/checkmark.png" /> 5% per online order</p>
+      <p><img src="/icons/checkmark.png" /> Instant access to dashboard</p>
+      <p><img src="/icons/checkmark.png" /> Menu + QR code setup included</p>
+      <p><img src="/icons/checkmark.png" /> Branded ordering page</p>
+      <p><img src="/icons/checkmark.png" /> Email support included</p>
+    </div>
+</div>
 
         <button onClick={()=> router.push("/register")}>Try Now</button>
       </section>
