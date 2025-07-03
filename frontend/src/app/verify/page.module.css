@@ -18,6 +18,7 @@
 }
 .container img:hover {
   transform: scale(1.05) rotate(2deg);
+  cursor: pointer;
 }
 
 .container h1 {
@@ -44,7 +45,7 @@
 }
 
 .input_box button {
-  background-color: #32CD32;
+  background-color: #0047FF;
   color: white;
   font-size: 1.1rem;
   padding: 14px 0;
@@ -56,7 +57,7 @@
 
 
 .input_box button:hover {
-  background-color: #28b428;
+  background-color: #0243ea;
 }
 
 .container_load{

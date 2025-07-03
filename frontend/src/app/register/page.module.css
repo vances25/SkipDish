@@ -31,7 +31,7 @@
   background: white;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  padding: 12px 16px;
+ 
 }
 
 .inputWithIcon img {
@@ -46,6 +46,7 @@
   flex: 1;
   background: transparent;
   margin-left: 15px;
+  padding: 12px 16px;
 }
 
 
@@ -67,12 +68,23 @@
 }
 
 
+.container a{
+  text-decoration: none;
+  color: #0047FF;
+}
+
 .input_box input:focus {
   border-color: #32CD32;
 }
 
+.options_pass{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .input_box button {
-  background-color: #32CD32;
+  background-color: #0050FF;
   color: white;
   font-size: 1.1rem;
   padding: 14px 0;
@@ -83,5 +95,5 @@
 }
 
 .input_box button:hover {
-  background-color: #28b428;
+  background-color: #0448da;
 }

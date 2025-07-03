@@ -12,18 +12,17 @@
 
 
 .button_section{
-    width: 100%;
+    max-width: 1200px;
     margin-top: 50px;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     align-items: center;
     gap: 8vh;
     margin-bottom: 100px;
+    justify-content: center;
+
 }
 
-.welcome{
-  margin-top: 50px;
-}
 
 .button {
   width: 80%;
@@ -60,8 +59,65 @@
   justify-content: space-around;
   align-items: center;
   border-radius: 15px;
+  width: 250px;
+  min-height: 200px;
 }
+
 
 .section img{
   width: 100px;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+
+.modalOverlay button{
+  width: 80%;
+  background: white;
+  color: #0061ff;
+  padding: 12px 24px;
+  border: 2px solid #0061ff;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 97, 255, 0.15);
+}
+
+.modalContent {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 90%;
+}
+
+.qrImage {
+  width: 400px;
+}
+
+@media(max-width: 768px){
+  .section{
+    font-size: 0.8em;
+    width: 130px;
+  }
+
+  .button_section{
+      gap: 10px;
+    }
 }

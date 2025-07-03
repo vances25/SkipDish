@@ -108,11 +108,7 @@ export default function VerifyEmail() {
 
   return (
     <div className={styles.container}>
-      <img
-        onClick={() => router.push("/")}
-        src="/logowhite.png"
-        alt="Logo"
-      />
+      <img onClick={() => router.push("/")} src="/icons/email_icon.png" />
       <h1>Verify Your Account</h1>
 
       <div className={styles.input_box}>

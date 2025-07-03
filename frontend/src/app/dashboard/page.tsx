@@ -17,6 +17,7 @@ export default function Dashboard(){
   const router = useRouter();
   const [src, setSrc] = useState<string>("")
   const [shopId, setShopId] = useState<string>("")
+  const [showQRModal, setShowQRModal] = useState(false);
   
 
 
@@ -65,7 +66,6 @@ const get_menu = () => {
         <>
         <div className={styles.container}>
             <Nav/>
-             <img src={src && src}></img>
             <h1 className={styles.welcome}>Welcome To SkipDish!</h1>
             <div className={styles.button_section}>
                 <div onClick={()=> router.push("/dashboard/orders")} className={styles.section}>
@@ -73,14 +73,49 @@ const get_menu = () => {
                     <h1>Orders</h1>
                     <p>View and manage all orders</p>
                   </div>
-                <button onClick={()=> router.push("/dashboard/orders")} className={styles.button}>View Orders</button>
 
-                <button onClick={()=> router.push("/dashboard/menu")} className={styles.button}>Manage Menu</button>
+                <div onClick={()=> router.push("/dashboard/menu")} className={styles.section}>
+                  <img src="/icons/burger_icon.png" />
+                    <h1>Manage Menu</h1>
+                    <p>Edit Food Items</p>
+                </div>
 
-                <button onClick={()=> router.push(`/shop/${shopId}`)} className={styles.button}>View Shop</button>
+                 <div onClick={()=> router.push(`/shop/${shopId}`)} className={styles.section}>
+                  <img src="/icons/house.png" />
+                    <h1>View Shop</h1>
+                    <p>See What Customers See</p>
+                </div>
+
+                 <div onClick={()=> router.push("/dashboard/menu")} className={styles.section}>
+                  <img src="/icons/arrow.png" />
+                    <h1>Analytics</h1>
+                    <p>Track Revenue</p>
+                </div>
+
+                 <div onClick={() => setShowQRModal(true)} className={styles.section}>
+                  <img src="/qrcode.png" />
+                    <h1>QR Code</h1>
+                    <p>Share Your Shop QR Code</p>
+                </div>
+
+                 <div className={styles.section}>
+                    <img src="/icons/dollar.png" />
+                    <h2>Today's Revenue</h2>
+                    <h1>$0</h1>
+                </div>
+
+              
             </div>
 
         </div>
+        {showQRModal && (
+          <div className={styles.modalOverlay} onClick={() => setShowQRModal(false)}>
+            <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+              <img src={src} alt="QR Code" className={styles.qrImage} />
+              <button onClick={() => setShowQRModal(false)} className={styles.closeButton}>Close</button>
+            </div>
+          </div>
+        )}
         </>
     )
 }

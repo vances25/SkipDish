@@ -7,6 +7,9 @@ import { useRouter } from "next/navigation";
 
 import { useParams } from "next/navigation";
 
+import confetti from 'canvas-confetti';
+
+
 interface MenuItem {
   id: string;
   name: string;
@@ -21,6 +24,7 @@ export default function Shop() {
   const [cart, setCart] = useState<MenuItem[]>([]);
   const [showCart, setShowCart] = useState(false);
   const { brandId } = useParams();
+  const [showToast, setShowToast] = useState<boolean>(false)
 
   const cartKey = `cart-${brandId}`;
 
@@ -113,6 +117,14 @@ export default function Shop() {
     const updatedCart = [...cart, item];
     setCart(updatedCart);
     localStorage.setItem(cartKey, JSON.stringify(updatedCart));
+    setShowToast(true);
+    confetti({
+      particleCount: 60,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
+    setTimeout(() => setShowToast(false), 1500);
+    
   };
 
 
@@ -125,15 +137,10 @@ export default function Shop() {
 
   return (
     <div className={styles.container}>
-      <img className={styles.back_home} onClick={()=>router.push("/dashboard")} src="/logowords.png" alt="Back Home" />
-
+     <div onClick={()=> router.push("/dashboard")} className={styles.back_home}>Home</div>
       <div className={styles.header}>
         <h1 className={styles.shopName}>{shopName}</h1>
       </div>
-
-            <button className={styles.cartToggle} onClick={() => setShowCart(true)}>
-        🛒 View Cart ({cart.length})
-        </button>
 
       <div className={styles.menuList}>
         {menuItems.length === 0 ? (
@@ -141,14 +148,22 @@ export default function Shop() {
         ) : (
           menuItems.map(item => (
             <div key={item.id} className={styles.menuCard}>
-              <div className={styles.menuInfo}>
-                <h2>{item.name}</h2>
-                <p className={styles.description}>{item.description}</p>
-                <p className={styles.price}>${item.price}</p>
+
+               <div className={styles.icons_shit}>
+                  <div className={styles.menuInfo}>
+                    <div className={styles.top_section}>
+                      <h2>{item.name}</h2>
+                      <p className={styles.price}>${item.price}</p>
+                    </div>
+                    <p className={styles.description}>{item.description}</p>
+                    <br/>
+                    <div className={styles.menuActions}>
+                      <button className={`${styles.orderButton}`} onClick={() => addToCart(item)}>Add to Cart</button>
+                  </div>
+                  </div>
+
               </div>
-              <div className={styles.menuActions}>
-                <button className={styles.orderButton} onClick={() => addToCart(item)}>Add to Cart</button>
-              </div>
+
             </div>
           ))
         )}
@@ -164,6 +179,7 @@ export default function Shop() {
                 Your cart is empty.
                 </p>
             ) : (
+              <>
                 <ul>
                 {cart.map((item, i) => (
                     <li key={i} className={styles.cartItem}>
@@ -172,9 +188,19 @@ export default function Shop() {
                     </span>
                     <button className={styles.removeBtn} onClick={() => removeFromCart(i)}>✕</button>
                     </li>
-                ))}
+                ))}                
                 </ul>
+
+            <button
+              onClick={() => stripe_checkout()}
+              className={styles.checkout}
+            >
+              Checkout
+            </button>
+                </>
+                
             )}
+            <br/>
 
             <button onClick={() => setShowCart(false)} style={{ marginTop: "1rem" }}>
                 Close
@@ -182,12 +208,13 @@ export default function Shop() {
             </div>
         </div>
         )}
-        <button
-              onClick={() => stripe_checkout()}
-              className={styles.checkout}
-            >
-              Checkout
-            </button>
+        <div className={styles.cartToggle} onClick={() => setShowCart(true)}>
+          <img src="/icons/cart.png" />
+        <p className={showToast ? styles.cartCountBump : ""}>View Cart ({cart.length})</p>
+        </div>
+        {showToast && (
+  <div className={styles.toast}>Added to cart!</div>
+)}
     </div>
 );
 }

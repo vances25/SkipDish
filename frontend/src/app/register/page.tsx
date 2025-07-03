@@ -106,13 +106,16 @@ export default function Register() {
           />
         </div>
 
-        <label>
-          <input
-            type="checkbox"
-            checked={showPassword}
-            onChange={() => setShowPassword(!showPassword)}
-          /> Show password</label>
-
+      <div className={styles.options_pass}>
+          <label>
+            <input
+              type="checkbox"
+              checked={showPassword}
+              onChange={() => setShowPassword(!showPassword)}
+            /> Show password</label>
+            
+            <p>Have an account? <a href="/login">Login</a></p>
+        </div>
         <button onClick={() => make_request()}>Get Started</button>
         <p>{response}</p>
       </div>
