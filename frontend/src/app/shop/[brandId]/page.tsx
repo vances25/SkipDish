@@ -20,7 +20,6 @@ interface MenuItem {
 export default function Shop() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [shopName, setShopName] = useState<string>("");
-  const [brandImage, setBrandImage] = useState<string>("https://placehold.co/600x400/png");
   const [cart, setCart] = useState<MenuItem[]>([]);
   const [showCart, setShowCart] = useState(false);
   const { brandId } = useParams();

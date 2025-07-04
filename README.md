@@ -26,11 +26,14 @@ Create a `.env` file inside the `/backend` directory and add the following:
 
 ```env
 DB_URL=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/
-ACCESS_KEY=your-secret-access-key
-REFRESH_KEY=your-secret-refresh-key
-BREVO_KEY=your-brevo-email-api-key
-DOMAIN=your-frontend-domain.com
+ACCESS_KEY=<your-access-key>
+REFRESH_KEY=<your-refresh-key>
+BREVO_KEY=<your-brevo-key>
+DOMAIN=404society.xyz
 BACKEND_URL=http://localhost:8000
+FRONTEND_URL=http://localhost:3000
+STRIPE_KEY=<your-stripe-secret-key>
+STRIPE_WEBHOOK_SECRET=<your-stripe-webhook-secret>
 ```
 
 ### Explanation
@@ -41,6 +44,9 @@ BACKEND_URL=http://localhost:8000
 - `BREVO_KEY`: API key from Brevo for sending emails like verification and notifications.
 - `DOMAIN`: Your website domain, used in links (e.g., email verification links).
 - `BACKEND_URL`: Public or local backend server URL (used in CORS setup and link generation).
+- `FRONTEND_URL`: Public or local frontend URL (used in redirect links).
+- `STRIPE_KEY`: Stripe test secret key used for onboarding and payments.
+- `STRIPE_WEBHOOK_SECRET`: Used to verify Stripe webhook signatures.
 
 ---
 

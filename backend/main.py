@@ -123,9 +123,37 @@ async def checkoutSession(data: CheckoutSessionRequest, request: Request):
         raise HTTPException(status_code=404, detail="Vendor not found or not connected to Stripe")
 
     order_id = str(uuid.uuid4())
-    
     items = [item.dict() for item in data.items]  # Convert all to plain dicts
     json_string = json.dumps(items)
+
+    # Simulate order creation and receipt insertion for test mode without hitting Stripe
+    if vendor.get("test_mode"):
+        order = {
+            "id": order_id,
+            "customer_name": "Test User",
+            "items": items,
+            "total_price": data.amount_cents * 0.01,
+            "status": "pending",
+            "created_at": time.time()
+        }
+
+        await request.app.state.db["users"]["vendors"].update_one(
+            {"user_id": data.vendor_id},
+            {"$push": {"orders": order}}
+        )
+
+        receipt = {
+            "order_id": order_id,
+            "vendor_id": data.vendor_id,
+            "customer_name": "Test User",
+            "items": items,
+            "total_price": data.amount_cents * 0.01,
+            "created_at": time.time()
+        }
+
+        await request.app.state.db["users"]["receipts"].insert_one(receipt)
+
+        return {"url": f"{os.getenv('FRONTEND_URL')}/receipt?order_id={order_id}"}
 
     try:
         session = stripe.checkout.Session.create(
@@ -172,14 +200,74 @@ async def get_one_time_receipt(order_id: str, request: Request):
     if not receipt:
         raise HTTPException(status_code=404, detail="Receipt not found")
     
-    receipt_db.delete_one({"order_id": order_id})
     
     print(receipt)
 
     return receipt
     
     
+@app.get("/account")
+async def account_setting(request: Request, Authorization: str = Header(...)):
+    db = request.app.state.db
+    users_db = db["users"]["users"]
 
+    result = decode_token(Authorization.split("Bearer ")[1], os.getenv("ACCESS_KEY"))
+    
+    if not result:
+        raise HTTPException(status_code=403, detail="you are not permited here")
+    
+    users_data = await users_db.find_one({"user_id": result["sub"]}, {"_id": 0})
+    
+    if not users_data:
+        raise HTTPException(status_code=404, detail="vendor not found")
+    
+    
+    return {"detail": "worked", "email": users_data["email"]}
+
+class UpdateAccount(BaseModel):
+    change_type: str
+    value: str
+    old_password: str | None = None
+@app.post("/update_account")
+async def update_account(data: UpdateAccount, request: Request, Authorization: str = Header(...)):
+    db = request.app.state.db
+    users_db = db["users"]["users"]
+
+    result = decode_token(Authorization.split("Bearer ")[1], os.getenv("ACCESS_KEY"))
+    if not result:
+        raise HTTPException(status_code=403, detail="you are not permitted here")
+
+    user = await users_db.find_one({"user_id": result["sub"]})
+    if not user:
+        raise HTTPException(status_code=404, detail="vendor not found")
+
+    if data.change_type == "email":
+        await users_db.update_one({"user_id": result["sub"]}, {"$set": {"email": data.value}})
+    elif data.change_type == "password":
+        
+        encrypted_password = bcrypt.hashpw(data.old_password.encode(), bcrypt.gensalt())
+        stored_hash = bcrypt.checkpw(data.old_password.encode(), user["password"])
+        
+        
+        print(f"sent password: {encrypted_password}")
+        print(f"saved password{ user.get("password")}")
+        
+        
+        
+        if not data.old_password:
+            raise HTTPException(status_code=401, detail="Old password is incorrect")
+        
+        stored_hash = bcrypt.checkpw(data.old_password.encode(), user["password"])
+        
+        if not stored_hash:
+            raise HTTPException(status_code=401, detail="Old password is incorrect")
+        
+        new_password = bcrypt.hashpw(data.value.encode(), bcrypt.gensalt())
+        await users_db.update_one({"user_id": result["sub"]}, {"$set": {"password": new_password}})
+    else:
+        raise HTTPException(status_code=400, detail="Invalid change type")
+
+    return {"status": "updated"}
 @app.post("/checkout_complete")
 async def checkout_webhook(request: Request):
     db = request.app.state.db
@@ -334,6 +422,7 @@ async def register(data: Register, request: Request, response: Response):
         "role": "vendor",
         "verify_token": "",
         "stripe_id": account.id,
+        "test_mode": True,
     }
   
     
@@ -341,6 +430,27 @@ async def register(data: Register, request: Request, response: Response):
     
     return {"detail": "success", "access_token": access_token}
 
+@app.get("/vendor/restart_onboarding")
+async def restart_onboarding(request: Request, Authorization: str = Header(...)):
+    db = request.app.state.db
+    users_db = db["users"]["users"]
+
+    result = decode_token(Authorization.split("Bearer ")[1], os.getenv("ACCESS_KEY"))
+    if not result:
+        raise HTTPException(status_code=403, detail="Unauthorized")
+
+    user = await users_db.find_one({"user_id": result["sub"]})
+    if not user or "stripe_id" not in user:
+        raise HTTPException(status_code=404, detail="Stripe account not found")
+
+    account_link = stripe.AccountLink.create(
+        account=user["stripe_id"],
+        refresh_url=f"{os.getenv('FRONTEND_URL')}/dashboard",
+        return_url=f"{os.getenv('FRONTEND_URL')}/dashboard",
+        type="account_onboarding"
+    )
+
+    return {"url": account_link.url}
 
 @app.post("/refresh")
 async def refresh(request: Request, response: Response):
@@ -415,6 +525,37 @@ async def refresh_onboarding(request: Request):
     return RedirectResponse(link.url)
 
 
+@app.post("/change_mode")
+async def change_mode(request: Request, Authorization: str = Header(...)):
+    db = request.app.state.db
+    user_db = db["users"]["users"]
+    
+    
+    result = decode_token(Authorization.split("Bearer ")[1], os.getenv("ACCESS_KEY"))
+    
+    if not result:
+        raise HTTPException(status_code=403, detail="you are not permited here")
+    
+    current_user = await user_db.find_one({"user_id": result["sub"]}, {"_id": 0})
+    
+    if not current_user:
+        raise HTTPException(status_code=404, detail="this user does not exist")
+    
+    account = stripe.Account.retrieve(current_user["stripe_id"])
+    
+    if not account.charges_enabled and not account.payouts_enabled:
+        raise HTTPException(status_code=401, detail="please verfity your stripe account")
+    
+    new_mode = not current_user["test_mode"]
+    
+    
+    
+    
+    await user_db.update_one({"user_id": result["sub"]}, {"$set": {"test_mode": new_mode}})
+
+    return {"detail": "it work", "mode": new_mode}
+
+
 @app.get("/check-verify-status")
 async def check_status(request: Request, Authorization: str = Header(...)):
     db = request.app.state.db
@@ -449,12 +590,13 @@ async def check_status(request: Request, Authorization: str = Header(...)):
             return {
                 "detail": "connect",
                 "url": link.url,
+                "test_mode": current_user["test_mode"],
                 "missing": requirements.get("currently_due", []),
                 "reason": requirements.get("disabled_reason", "incomplete")
             }
 
         if account.charges_enabled and account.payouts_enabled:
-            return {"detail": "good", "role": current_user["role"]}
+            return {"detail": "good", "test_mode": current_user["test_mode"], "role": current_user["role"]}
         else:
             print("new shit")
             link = stripe.AccountLink.create(
@@ -463,7 +605,7 @@ async def check_status(request: Request, Authorization: str = Header(...)):
                 return_url=f"{os.getenv("FRONTEND_URL")}/dashboard",
                 type="account_onboarding",
             )
-            return {"detail": "connect", "url": link.url}
+            return {"detail": "connect", "test_mode": current_user["test_mode"], "url": link.url}
 
     
     

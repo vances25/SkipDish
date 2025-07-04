@@ -49,9 +49,10 @@ export default function VerifyEmail() {
             router.push("/dashboard");
           } 
           else if (data.detail === "connect") {
-            setConnectUrl(data.url);
-            setMessage("Please connect your Stripe account to continue.");
-            setLoading(false);
+            router.push("/dashboard")
+            // setConnectUrl(data.url);
+            // setMessage("Please connect your Stripe account to continue.");
+            // setLoading(false);
           } else {
             setMessage(data.detail);
             resendEmail();

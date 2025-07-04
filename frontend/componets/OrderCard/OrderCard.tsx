@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import styles from "./style.module.css";
 
+
+
 interface OrderItem {
   id: string;
   name: string;
@@ -33,6 +35,7 @@ interface OrderCardProps {
 export default function OrderCard({ order, refreshOrders }: OrderCardProps) {
   const [updating, setUpdating] = useState(false);
   const [justAdded, setJustAdded] = useState(true);
+  const [showOptions, setShowOptions] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setJustAdded(false), 1000); // 1 second animation
@@ -108,42 +111,33 @@ export default function OrderCard({ order, refreshOrders }: OrderCardProps) {
       <ul className={styles.items}>
         {order.items.map((item, idx) => (
           <li key={idx}>
-            {item.quantity && `${item.quantity}x `}{item.name} - ${item.price}
+            {item.quantity && `${item.quantity}x `} {idx +1}. {item.name} - ${item.price}
           </li>
         ))}
       </ul>
       <div className={styles.footer}>
         <strong>Total: ${order.total_price}</strong>
         <div className={styles.actions}>
-         <button
-           disabled={updating}
-           className={order.status === "in progress" ? styles.active : ""}
-           onClick={() => updateOrder("in progress")}
-         >
-           Start
-         </button>
-          <button
-            disabled={updating}
-            className={order.status === "completed" ? styles.active : ""}
-            onClick={() => updateOrder("completed")}
-          >
-            Complete
-          </button>
-          <button
-            disabled={updating}
-            onClick={() => updateOrder("bumped")}
-          >
-            Bump
-          </button>
-          <button
-            disabled={updating}
-            onClick={() => {
-              const confirmed = window.confirm("Are you sure you want to cancel this order?");
-              if (confirmed) updateOrder("cancelled");
+          <select
+            id={`dropdown-${order.id}`}
+            className={styles.dropdownButton}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (!value) return;
+              if (value === "cancelled") {
+                const confirmed = window.confirm("Are you sure you want to cancel this order?");
+                if (!confirmed) return;
+              }
+              updateOrder(value);
+              e.target.selectedIndex = 0; // reset to default
             }}
           >
-            Cancel
-          </button>
+            <option value="">Actions...</option>
+            <option value="in progress">Start</option>
+            <option value="completed">Complete</option>
+            <option value="bumped">Bump</option>
+            <option value="cancelled">Cancel</option>
+          </select>
         </div>
       </div>
     </div>

@@ -111,6 +111,80 @@
   width: 400px;
 }
 
+
+
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.popupContent {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+  width: 320px;
+  max-width: 90%;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.popupContent h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.4rem;
+}
+
+.popupContent p {
+  font-size: 1rem;
+  color: #333;
+}
+
+.stripeButton {
+  display: inline-block;
+  background-color: #635bff;
+  color: white;
+  padding: 10px 20px;
+  margin-top: 1rem;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 5px;
+  transition: background 0.2s ease;
+}
+
+.stripeButton:hover {
+  background-color: #4b44e0;
+}
+
+.closeButton {
+  display: block;
+  margin: 1rem auto 0;
+  background: transparent;
+  border: none;
+  color: #666;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @media(max-width: 768px){
   .section{
     font-size: 0.8em;
@@ -120,4 +194,36 @@
   .button_section{
       gap: 10px;
     }
+}
+ 
+.inputField {
+  width: 100%;
+  padding: 0.7rem;
+  margin: 0.5rem 0 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.saveButton {
+  background-color: #0070f3;
+  color: white;
+  padding: 0.7rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.saveButton:hover {
+  background-color: #0058c7;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1rem;
 }
