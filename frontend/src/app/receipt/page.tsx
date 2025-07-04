@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import styles from "./style.module.css";
 
-export default function OrderSuccess() {
+function OrderSuccessContent() {
   const searchParams = useSearchParams();
   const order_id = searchParams.get("order_id");
 
   const [session, setSession] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (!order_id) return;
@@ -59,5 +59,13 @@ export default function OrderSuccess() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function OrderSuccess() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <OrderSuccessContent />
+    </Suspense>
   );
 }
