@@ -6,3 +6,4 @@ bcrypt
 requests
 pillow
 pyjwt
+stripe
