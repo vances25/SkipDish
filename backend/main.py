@@ -184,6 +184,7 @@ async def checkoutSession(data: CheckoutSessionRequest, request: Request):
                 },
                 "on_behalf_of": vendor["stripe_id"]
             },
+            stripe_account=vendor["stripe_id"],
         )
         return {"url": session.url}
     except Exception as e:
