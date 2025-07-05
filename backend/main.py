@@ -158,22 +158,22 @@ async def checkoutSession(data: CheckoutSessionRequest, request: Request):
     try:
         session = stripe.checkout.Session.create(
             metadata={
-            "vendor_id": data.vendor_id,
-            "order_id": order_id,
-            "total_price": data.amount_cents * 0.01,
-            "items": json_string
-        },
-            payment_method_types=["card"],
-            line_items = [{
-            "price_data": {
-                "currency": "usd",
-                "product_data": {
-                    "name": item.name,
-                },
-                "unit_amount": int(item.price * 100),
+                "vendor_id": data.vendor_id,
+                "order_id": order_id,
+                "total_price": data.amount_cents * 0.01,
+                "items": json_string
             },
-            "quantity": 1
-        } for item in data.items],
+            payment_method_types=["card"],
+            line_items=[{
+                "price_data": {
+                    "currency": "usd",
+                    "product_data": {
+                        "name": item.name,
+                    },
+                    "unit_amount": int(item.price * 100),
+                },
+                "quantity": 1
+            } for item in data.items],
             mode="payment",
             success_url=f"{os.getenv('FRONTEND_URL')}/receipt?order_id={order_id}",
             cancel_url=f"{os.getenv('FRONTEND_URL')}/shop/{data.vendor_id}",
@@ -183,7 +183,8 @@ async def checkoutSession(data: CheckoutSessionRequest, request: Request):
                     "destination": vendor["stripe_id"],
                 },
                 "on_behalf_of": vendor["stripe_id"]
-            }
+            },
+            stripe_account=vendor["stripe_id"]
         )
         return {"url": session.url}
     except Exception as e:
@@ -268,6 +269,7 @@ async def update_account(data: UpdateAccount, request: Request, Authorization: s
         raise HTTPException(status_code=400, detail="Invalid change type")
 
     return {"status": "updated"}
+
 @app.post("/checkout_complete")
 async def checkout_webhook(request: Request):
     db = request.app.state.db
